@@ -1,0 +1,90 @@
+group 'org.myorg.modules'
+version '1.0.0'
+
+gradle.ext.sdkVersion = '1.0.0'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'net.ltgt.apt'
+apply plugin: "net.ltgt.apt-idea"
+
+sourceCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
+
+configurations {
+    provided
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main.java.srcDirs += "build/generated/source/apt/main"
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
+    }
+}
+
+sourceSets {
+    main.java.srcDirs += "build/generated/source/apt/main"
+}
+
+jar {
+    archiveName = project.hasProperty('filename') ? filename : (rootProject.name + '.jar')
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
+
+dependencies {
+    // Spring
+    compile 'org.springframework:spring-context:5.0.1.RELEASE'
+    compile 'org.springframework:spring-orm:5.0.1.RELEASE'
+    compile 'org.springframework:spring-tx:5.0.1.RELEASE'
+
+    // Web
+    compile 'org.springframework:spring-webmvc:5.0.1.RELEASE'
+    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+    
+    implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+
+    compile 'org.apache.tomcat.embed:tomcat-embed-core:8.0.48'
+    compile 'org.apache.tomcat.embed:tomcat-embed-jasper:8.0.48'
+    compile 'org.apache.tomcat.embed:tomcat-embed-logging-juli:8.0.48'
+    
+    // Hibernate
+    compile 'org.hibernate:hibernate-entitymanager:4.3.6.Final'
+
+    // Postgres
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+    
+    compile 'org.springframework:spring-jdbc:5.0.1.RELEASE'
+
+    compile 'org.reflections:reflections:0.9.12'
+    compile 'org.json:json:20200518'
+
+    compile 'org.apache.commons:commons-lang3:3.0'
+
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation group: 'com.google.guava', name: 'guava', version: '11.0.2'
+
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.0.pr3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0.pr3'
+
+
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
