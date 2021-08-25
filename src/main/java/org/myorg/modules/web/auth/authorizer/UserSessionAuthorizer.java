@@ -55,15 +55,15 @@ public class UserSessionAuthorizer implements Authorizer {
     }
 
     @Override
-    public boolean isSupport(HttpServletRequest request) {
+    public boolean supports(HttpServletRequest request) {
         return getSession(request) != null;
     }
 
     private UserSource getUserResource(UserResource userResource, PersistenceContext pc) throws ModuleException {
         UserSource userSource = new UserSource();
         userSource.setId(userResource.getId());
-        userResource.setAdmin(userResource.isAdmin());
-        userResource.setEnabled(userResource.isEnabled());
+        userSource.setAdmin(userResource.isAdmin());
+        userSource.setEnabled(userResource.isEnabled());
 
         List<PrivilegeAccessOpPair> userPrivileges = accessPrivilegeGetter.getUserPrivileges(userResource.getId(), pc);
         userSource.setPrivilegeAccessOpPairs(userPrivileges);

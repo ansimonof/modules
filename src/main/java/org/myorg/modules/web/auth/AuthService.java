@@ -1,21 +1,28 @@
 package org.myorg.modules.web.auth;
 
 import org.myorg.modules.exception.ModuleException;
+import org.myorg.modules.exception.ModuleExceptionBuilder;
 import org.myorg.modules.web.auth.authorizer.Authorizer;
 import org.myorg.modules.web.auth.context.UnauthContext;
 import org.myorg.modules.web.auth.context.source.Source;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@Component
 public class AuthService {
 
     @Autowired
-    private List<? extends Authorizer> authorizers;
+    private HttpServletRequest request;
+
+    private final List<? extends Authorizer> authorizers;
 
     @Autowired
-    private HttpServletRequest request;
+    public AuthService(List<? extends Authorizer> authorizers) {
+        this.authorizers = authorizers;
+    }
 
     public UnauthContext<? extends Source> auth() throws Exception {
         Authorizer authorizer = getAuthorizer();
@@ -28,7 +35,7 @@ public class AuthService {
         UnauthContext<? extends Source> context = authorizer.auth(request);
         // Некорректные credentials
         if (context == null) {
-            throw new ModuleException("Bad auth");
+            throw ModuleExceptionBuilder.buildIncorrectCredentialsException();
         }
 
         return context;
@@ -37,9 +44,9 @@ public class AuthService {
     private Authorizer getAuthorizer() throws ModuleException {
         Authorizer authorizer = null;
         for (Authorizer auth : authorizers) {
-            if (auth.isSupport(request)) {
+            if (auth.supports(request)) {
                 if (authorizer != null) {
-                    throw new ModuleException("Problem in auth");
+                    throw ModuleExceptionBuilder.buildAmbiguityAuthException();
                 }
                 authorizer = auth;
             }

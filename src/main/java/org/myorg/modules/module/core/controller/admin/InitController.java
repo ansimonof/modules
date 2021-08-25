@@ -1,7 +1,7 @@
 package org.myorg.modules.module.core.controller.admin;
 
 import org.myorg.modules.access.annotation.AuthorizedContext;
-import org.myorg.modules.exception.ModuleException;
+import org.myorg.modules.exception.ModuleExceptionBuilder;
 import org.myorg.modules.module.core.domainobject.user.UserBuilder;
 import org.myorg.modules.module.core.domainobject.user.UserDto;
 import org.myorg.modules.module.core.domainobject.user.UserMapper;
@@ -41,7 +41,7 @@ public class InitController {
                     .findAny()
                     .orElse(null);
             if (userResource != null) {
-                throw new ModuleException("Application is already initialized");
+                throw ModuleExceptionBuilder.buildAppAlreadyInitialized();
             }
 
             UserBuilder builder = new UserBuilder()

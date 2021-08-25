@@ -1,12 +1,10 @@
 package org.myorg.modules.configuration.web;
 
-import org.myorg.modules.exception.ModuleException;
 import org.myorg.modules.web.argresolver.ContextHandlerMethodArgumentResolver;
 import org.myorg.modules.web.auth.AuthService;
-import org.myorg.modules.web.auth.authorizer.UserSessionAuthorizer;
 import org.myorg.modules.web.auth.context.Context;
 import org.myorg.modules.web.interceptor.AuthorizingInterceptor;
-import org.myorg.modules.web.session.SessionManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -24,23 +22,18 @@ import java.util.List;
 public class WebConfiguration implements WebMvcConfigurer {
 
     // ArgumentResolvers
+    @Autowired
+    private ContextHandlerMethodArgumentResolver contextHandlerMethodArgumentResolver;
 
-    @Bean
-    ContextHandlerMethodArgumentResolver contextHandlerMethodArgumentResolver() {
-        return new ContextHandlerMethodArgumentResolver();
-    }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(contextHandlerMethodArgumentResolver());
+        resolvers.add(contextHandlerMethodArgumentResolver);
     }
 
     // Auth
-
-    @Bean
-    AuthService authService() {
-        return new AuthService();
-    }
+    @Autowired
+    private AuthService authService;
 
     @Bean
     AuthorizingInterceptor authorizingInterceptor() {
@@ -55,13 +48,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Bean
     @RequestScope
     Context<?> getAuthContext() throws Exception {
-        return authService().auth();
+        return authService.auth();
     }
-
-    @Bean
-    SessionManager sessionManager() {
-        return new SessionManager();
-    }
-
 
 }

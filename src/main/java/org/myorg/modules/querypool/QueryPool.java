@@ -3,6 +3,8 @@ package org.myorg.modules.querypool;
 import org.myorg.modules.exception.ModuleException;
 import org.myorg.modules.querypool.database.PersistenceContext;
 import org.myorg.modules.querypool.threadpool.DefaultThreadPoolExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +19,14 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class QueryPool {
 
+    private static final Logger log = LoggerFactory.getLogger(QueryPool.class);
+
     private final ThreadPoolExecutor threadPoolExecutor;
 
     private final EntityManagerFactory emf;
 
     private final Thread.UncaughtExceptionHandler uncaughtExceptionHandler = (t, e) -> {
-    // Need Logging
-        System.out.println("Crash");
+        log.error("Uncaught exception in thread: {} ", t.getName(), e);
         e.printStackTrace();
         System.exit(1);
     };
@@ -72,7 +75,9 @@ public class QueryPool {
                 et.rollback();
                 future.completeExceptionally(e);
             } catch (Throwable e) {
-                et.rollback();
+                if (et != null) {
+                    et.rollback();
+                }
                 future.cancel(true);
                 throw new RuntimeException(e);
             }

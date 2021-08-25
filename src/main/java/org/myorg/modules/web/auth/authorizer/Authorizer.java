@@ -9,5 +9,5 @@ public interface Authorizer {
 
     UnauthContext<? extends Source> auth(HttpServletRequest request);
 
-    boolean isSupport(HttpServletRequest request);
+    boolean supports(HttpServletRequest request);
 }

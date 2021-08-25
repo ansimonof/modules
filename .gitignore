@@ -1,4 +1,5 @@
-postgresql.txt
+*.txt
+/data/*
 
 /.gradle/
 /build/

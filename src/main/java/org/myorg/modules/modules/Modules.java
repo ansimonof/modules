@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 public class Modules implements ApplicationListener<ContextRefreshedEvent> {
 
     private final List<? extends Module> modules;
-
-
     private final QueryPool queryPool;
 
     @Autowired
