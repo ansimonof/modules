@@ -1,13 +1,25 @@
 package org.myorg.modules.module.core.domainobject.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserDto {
 
+    @JsonProperty("id")
     private Long id;
+
+    @JsonProperty("login")
     private String login;
+
+    @JsonProperty("password_hash")
     private String passwordHash;
+
+    @JsonProperty("is_enabled")
     private Boolean isEnabled;
+
+    @JsonProperty("is_admin")
     private Boolean isAdmin;
 
+    @JsonProperty("session")
     private String session;
 
     public UserDto() {
@@ -25,11 +37,13 @@ public class UserDto {
         return passwordHash;
     }
 
-    public Boolean getEnabled() {
+    @JsonProperty("is_enabled")
+    public Boolean isEnabled() {
         return isEnabled;
     }
 
-    public Boolean getAdmin() {
+    @JsonProperty("is_admin")
+    public Boolean isAdmin() {
         return isAdmin;
     }
 

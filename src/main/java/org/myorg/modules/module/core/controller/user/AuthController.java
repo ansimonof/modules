@@ -1,6 +1,6 @@
 package org.myorg.modules.module.core.controller.user;
 
-import org.myorg.modules.access.annotation.AuthorizedContext;
+import org.myorg.modules.web.annotation.AuthorizedContext;
 import org.myorg.modules.exception.ModuleExceptionBuilder;
 import org.myorg.modules.module.core.domainobject.user.UserBuilder;
 import org.myorg.modules.module.core.domainobject.user.UserDto;
@@ -13,17 +13,13 @@ import org.myorg.modules.web.auth.context.UnauthContext;
 import org.myorg.modules.web.session.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/core/auth")
 public class AuthController {
 
     @Autowired
@@ -35,9 +31,10 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    @AuthorizedContext({ UnauthContext.class })
     @PostMapping("/login/session")
-    public CompletableFuture<ResponseEntity<UserDto>> authSession(
+    @ResponseStatus(HttpStatus.OK)
+    @AuthorizedContext({ UnauthContext.class })
+    public CompletableFuture<UserDto> authSession(
             @RequestParam("login") String login,
             @RequestParam("password_hash") String passwordHash
     ) {
@@ -58,13 +55,14 @@ public class AuthController {
 
             sessionManager.setSessionToUser(session, userResource);
 
-            return ResponseEntity.ok(userDto);
+            return userDto;
         });
     }
 
-    @AuthorizedContext({ UnauthContext.class })
     @PostMapping("/registration")
-    public CompletableFuture<ResponseEntity<UserDto>> registration(
+    @ResponseStatus(HttpStatus.OK)
+    @AuthorizedContext({ UnauthContext.class })
+    public CompletableFuture<UserDto> registration(
             @RequestParam("login") String login,
             @RequestParam("password_hash") String passwordHash
     ) {
@@ -83,18 +81,19 @@ public class AuthController {
                         .withIsEnabled(true),
                     pc);
 
-            return ResponseEntity.ok(UserMapper.INSTANCE.toDto(userResource));
+            return UserMapper.INSTANCE.toDto(userResource);
         });
     }
 
-    @AuthorizedContext({ AuthContext.class })
     @PostMapping("/logout")
-    public CompletableFuture<ResponseEntity<Void>> logout(
+    @ResponseStatus(HttpStatus.OK)
+    @AuthorizedContext({ AuthContext.class })
+    public CompletableFuture<Void> logout(
             @RequestParam("session") String session
     ) {
         return queryPool.executeAndReturnFuture(pc -> {
             sessionManager.clearSession(session);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return null;
         });
     }
 

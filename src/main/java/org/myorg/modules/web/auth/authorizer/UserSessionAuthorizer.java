@@ -1,7 +1,7 @@
 package org.myorg.modules.web.auth.authorizer;
 
 import org.myorg.modules.access.PrivilegeAccessOpPair;
-import org.myorg.modules.access.service.AccessPrivilegeGetter;
+import org.myorg.modules.access.service.AccessPrivilegeService;
 import org.myorg.modules.exception.ModuleException;
 import org.myorg.modules.module.core.domainobject.user.UserResource;
 import org.myorg.modules.querypool.QueryPool;
@@ -28,7 +28,7 @@ public class UserSessionAuthorizer implements Authorizer {
     private SessionManager sessionManager;
 
     @Autowired
-    private AccessPrivilegeGetter accessPrivilegeGetter;
+    private AccessPrivilegeService accessPrivilegeService;
 
     @Autowired
     private QueryPool queryPool;
@@ -65,7 +65,7 @@ public class UserSessionAuthorizer implements Authorizer {
         userSource.setAdmin(userResource.isAdmin());
         userSource.setEnabled(userResource.isEnabled());
 
-        List<PrivilegeAccessOpPair> userPrivileges = accessPrivilegeGetter.getUserPrivileges(userResource.getId(), pc);
+        List<PrivilegeAccessOpPair> userPrivileges = accessPrivilegeService.getUserPrivileges(userResource.getId(), pc);
         userSource.setPrivilegeAccessOpPairs(userPrivileges);
 
         return userSource;

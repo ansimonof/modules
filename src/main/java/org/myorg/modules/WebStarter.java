@@ -1,12 +1,9 @@
 package org.myorg.modules;
 
-import ch.qos.logback.access.tomcat.LogbackValve;
-import org.apache.catalina.Host;
 import org.apache.catalina.startup.Tomcat;
 import org.json.JSONObject;
 import org.myorg.modules.util.ConfigUtils;
 
-import java.net.URL;
 
 public class WebStarter {
 
@@ -25,10 +22,10 @@ public class WebStarter {
             tomcat.addWebapp("", ".");
 
             // Настройка логов
-            Host tomcatHost = tomcat.getHost();
+           /* Host tomcatHost = tomcat.getHost();
             LogbackValve logbackValve = new LogbackValve();
             logbackValve.setFilename("logback-access.xml");
-            tomcatHost.getPipeline().addValve(logbackValve);
+            tomcatHost.getPipeline().addValve(logbackValve);*/
 
             tomcat.start();
             tomcat.getServer().await();

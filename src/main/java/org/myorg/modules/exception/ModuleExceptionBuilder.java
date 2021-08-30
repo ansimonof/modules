@@ -1,6 +1,8 @@
 package org.myorg.modules.exception;
 
 import org.json.JSONObject;
+import org.myorg.modules.access.AccessOp;
+import org.myorg.modules.access.PrivilegeEnum;
 import org.myorg.modules.querypool.database.DomainObject;
 import org.myorg.modules.web.auth.context.UnauthContext;
 import org.myorg.modules.web.auth.context.source.Source;
@@ -101,6 +103,22 @@ public class ModuleExceptionBuilder {
         return build("bad_source", new HashMap<String, Object>() {{
             put("needed", needed.getSimpleName());
             put("provided", provided.getSimpleName());
+        }});
+    }
+
+    public static ModuleException buildNoSuchPrivilegeException() {
+        return build("no_such_privilege");
+    }
+
+    public static ModuleException buildAccessOpCannotBeNullException() {
+        return build("access_op_cannot_be_null");
+    }
+
+    public static ModuleException buildPrivilegeDoesNotHaveAccessOpException(PrivilegeEnum privilege,
+                                                                    AccessOp accessOp) {
+        return build("privilege_does_not_have_access_op", new HashMap<String, Object>() {{
+            put("privilege", privilege.getUniqueKey());
+            put("op", accessOp.toString());
         }});
     }
 

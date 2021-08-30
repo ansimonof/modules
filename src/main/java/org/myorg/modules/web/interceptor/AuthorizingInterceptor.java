@@ -68,7 +68,7 @@ public class AuthorizingInterceptor implements AsyncHandlerInterceptor {
         }
 
         authContexts.stream()
-                .filter(ac -> ac.isAssignableFrom(proxyContext.getClazz()))
+                .filter(ac -> ac.isAssignableFrom(authContext.getClazz()))
                 .findAny()
                 .orElseThrow(ModuleExceptionBuilder::buildAccessDeniedException);
     }
@@ -95,13 +95,13 @@ public class AuthorizingInterceptor implements AsyncHandlerInterceptor {
             }
         }
 
-        List<PrivilegeAccessOpPair> privilegeAccessOpPairs = authContext.getSource().getPrivilegeAccessOpPairs();
-        PrivilegeAccessOpPair privilegeAccessOpPair = privilegeAccessOpPairs.stream()
+        List<PrivilegeAccessOpPair> userPrivilegeAccessOpPairs = authContext.getSource().getPrivilegeAccessOpPairs();
+        PrivilegeAccessOpPair userPrivilegeAccessOpPair = userPrivilegeAccessOpPairs.stream()
                 .filter(ap -> Objects.equals(ap.getPrivilegeEnum().getUniqueKey(), privilegeEnum.getUniqueKey()))
                 .findAny()
                 .orElseThrow(ModuleExceptionBuilder::buildAccessDeniedException);
 
-        if (!privilegeAccessOpPair.getAccessOpCollection().contains(accessOps)) {
+        if (!userPrivilegeAccessOpPair.getAccessOpCollection().contains(accessOps)) {
             throw ModuleExceptionBuilder.buildAccessDeniedException();
         }
     }

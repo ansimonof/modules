@@ -1,4 +1,4 @@
-package org.myorg.modules.access.annotation;
+package org.myorg.modules.web.annotation;
 
 import org.myorg.modules.web.auth.context.UnauthContext;
 

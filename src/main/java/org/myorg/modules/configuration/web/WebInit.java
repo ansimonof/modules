@@ -35,10 +35,11 @@ public class WebInit implements WebApplicationInitializer {
         dispatcher.addMapping("/");
         dispatcher.setAsyncSupported(true);
 
-        // Мониторинг логов у tomcat
+        /*// Мониторинг логов у tomcat
         ServletRegistration.Dynamic logbackServlet = servletContext
                 .addServlet("AccessViewStatusMessages", ch.qos.logback.access.ViewStatusMessagesServlet.class);
         logbackServlet.addMapping("/lbAccessStatus");
+        logbackServlet.setAsyncSupported(true);*/
     }
 }
 
